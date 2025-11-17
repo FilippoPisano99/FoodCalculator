@@ -11,9 +11,13 @@
         padding: 0;
         display: flex;
         align-items: center;
-        justify-content: center;
+        flex-direction: column;
+        justify-content: flex-start;
         height: 100vh;
         background: #eef3f8;
+        padding-top: 20%;
+
+        
     }
 
     #calcolatore{
@@ -71,6 +75,43 @@
         padding: 5px;
     }
 
+
+    /* Pulsantini preset */
+    #preset-container{
+        margin-top: 18px;
+        width: 90%;
+        max-width: 380px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .preset-btn{
+        flex: 1;
+        margin: 0 5px;
+        background: white;
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 22px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border: 1px solid #cfdbe6;
+        cursor: pointer;
+        transition: 0.15s;
+        user-select: none;
+    }
+
+    .preset-btn:active{
+        transform: scale(0.92);
+        background: #f0f5ff;
+    }
+
+    .preset-label{
+        display: block;
+        font-size: 13px;
+        color: #003366;
+        margin-top: 4px;
+    }
+
 </style>
 
 <body>
@@ -110,6 +151,13 @@
     </tr>
 
 </table>
+<!-- PULSANTI PRESET -->
+<div id="preset-container">
+    <div class="preset-btn" onclick="preset(80,60)">🍝<span class='preset-label'>Pasta</span></div>
+    <div class="preset-btn" onclick="preset(150,150)">🥩<span class='preset-label'>Carne</span></div>
+    <div class="preset-btn" onclick="preset(250,200)">🥔<span class='preset-label'>Patate</span></div>
+</div>
+
 
 <script>
 
@@ -146,6 +194,12 @@ function calcola(){
     // Ripartizione sul cotto
     p1_lordo.value = Math.round(v_tot_lordo * v_p1_perc / 100);
     p2_lordo.value = Math.round(v_tot_lordo * v_p2_perc / 100);
+}
+
+function preset(fil, moni){
+    p1_netto.value = fil;
+    p2_netto.value = moni;
+    calcola();
 }
 
 // AUTO-CALCOLO in tempo reale
