@@ -82,12 +82,16 @@
         width: 90%;
         max-width: 380px;
         display: flex;
-        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
     }
 
     .preset-btn{
-        flex: 1;
-        margin: 0 5px;
+        /* make each preset button 25% of the container */
+        flex: 0 0 calc(34% - 10px);
+        max-width: calc(34% - 10px);
+        margin: 0;
+        box-sizing: border-box;
         background: white;
         border-radius: 12px;
         padding: 12px;
@@ -153,14 +157,25 @@
 </table>
 <!-- PULSANTI PRESET -->
 <div id="preset-container">
+    <!-- 
     <div class="preset-btn" onclick="preset(80,60)">🍝<span class='preset-label'>Pasta</span></div>
     <div class="preset-btn" onclick="preset(150,150)">🥩<span class='preset-label'>Carne</span></div>
     <div class="preset-btn" onclick="preset(250,200)">🥔<span class='preset-label'>Patate</span></div>
+    -->
 </div>
 
 
 <script>
 
+const presets = [
+    {"icon":"🍝", "description":"Pasta/Riso", "peso1":80, "peso2":60 },
+    {"icon":"🥔", "description":"Patate"    , "peso1":250, "peso2":200 },
+    {"icon":"🥖", "description":"Pane"    , "peso1":100, "peso2":80 },
+    
+    {"icon":"🐓", "description":"Pollo"     , "peso1":180, "peso2":160 },
+    {"icon":"🐟", "description":"Pesce"    , "peso1":150, "peso2":150 },
+    {"icon":"🥩", "description":"Carne"     , "peso1":150, "peso2":150 },
+]
 function calcola(){
     let v_p1_netto = parseFloat(p1_netto.value);
     let v_p2_netto = parseFloat(p2_netto.value);
@@ -201,6 +216,26 @@ function preset(fil, moni){
     p2_netto.value = moni;
     calcola();
 }
+
+// Render buttons dynamically from the `presets` constant
+function renderPresets(){
+    const container = document.getElementById('preset-container');
+    if (!container) return;
+    container.innerHTML = '';
+    presets.forEach(p => {
+        const btn = document.createElement('div');
+        btn.className = 'preset-btn';
+        // call the existing preset(fil, moni) function when clicked
+        btn.addEventListener('click', () => preset(p.peso1, p.peso2));
+        btn.innerHTML = `${p.icon}<span class='preset-label'>${p.description}</span>`;
+        container.appendChild(btn);
+    });
+}
+
+// create the buttons on page load
+renderPresets();
+
+
 
 // AUTO-CALCOLO in tempo reale
 document.querySelectorAll("input").forEach(i => {
