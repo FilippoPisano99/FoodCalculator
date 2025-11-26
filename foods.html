@@ -1,0 +1,370 @@
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/navbar.css">
+
+<style>
+    body{
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 20px;
+        background: #eef3f8;
+    }
+
+    h2{
+        text-align: center;
+        margin-top: 5px;
+        color: #0b3a66;
+        font-weight: 600;
+    }
+
+    .wrapper{
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        max-width: 600px;
+        margin: auto;
+        margin-top: 20px;
+    }
+
+    .box{
+        background: white;
+        padding: 15px;
+        border-radius: 14px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    }
+
+    table{
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 17px;
+        padding-bottom: 100px;
+    }
+
+    th{
+        padding: 8px 0;
+        color: #003366;
+        border-bottom: 2px solid #cfdbe6;
+        font-weight: 600;
+    }
+
+    td{
+        padding: 8px;
+        text-align: center;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    /* Macro Headers */
+    .macro-row{
+        cursor: pointer;
+        font-weight: 700;
+        padding: 10px !important;
+        text-align: left;
+        font-size: 18px;
+        border-radius: 6px;
+        color: white;
+    }
+
+    .macro-carbs { background: #4a91e2; }
+    .macro-prot  { background: #7fbe54; }
+    .macro-fat   { background: #e2a84a; }
+
+    .macro-icon{
+        font-size: 22px;
+        margin-right: 8px;
+    }
+
+    .row-braker td{
+        background-color: rgba(8, 113, 218, 0.36)!important;
+    }
+
+    .hidden{
+        display: none;
+    }
+
+    /* =====================================
+       SWITCH VIEWER (Tutto / Fil / Moni)
+       ===================================== */
+
+    #view-switch{
+        display: flex;
+        justify-content: center;
+        margin-top: 15px;
+        gap: 8px;
+    }
+
+    .switch-btn{
+        background: #dce6f2;
+        padding: 10px 18px;
+        border-radius: 24px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        color: #003366;
+        transition: 0.2s;
+    }
+
+    .switch-btn.active{
+        background: #003366;
+        color: white;
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+</style>
+
+<body>
+
+
+<h2>Tabelle Fil & Moni</h2>
+
+<!-- SWITCH SELEZIONE -->
+<div id="view-switch">
+    <div class="switch-btn" data-view="tutto">Tutto</div>
+    <div class="switch-btn" data-view="fil">Fil</div>
+    <div class="switch-btn" data-view="moni">Moni</div>
+</div>
+
+<div class="wrapper">
+
+    <!-- FIL TAB -->
+    <div class="box" id="boxFil">
+        <h3 style="text-align:center;color:#0b3a66;">Fil</h3>
+        <table id="tabFil">
+            <tr>
+                <th>Alimento</th>
+                <th>Pranzo</th>
+                <th>Cena</th>
+            </tr>
+        </table>
+    </div>
+
+    <!-- MONI TAB -->
+    <div class="box" id="boxMoni">
+        <h3 style="text-align:center;color:#0b3a66;">Moni</h3>
+        <table id="tabMoni">
+            <tr>
+                <th>Alimento</th>
+                <th>Pranzo</th>
+                <th>Cena</th>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!-- PULSANTE DI SWITCH -->
+<a class="fixed-bottom-btn" href="index.html">🔄 Vai al Calcolatore</a>
+
+<script>
+/* ===============================
+   JSON DATI + CATEGORIE MACRO
+   =============================== */
+
+const macroStyle = {
+    "Carboidrati": { cls: "macro-carbs", icon: "🍞" },
+    "Proteine":    { cls: "macro-prot",  icon: "🥩" },
+    "Grassi":      { cls: "macro-fat",   icon: "🥑" }
+};
+
+const data = {
+    fil: [
+        { alimento: "Pasta", pranzo: 80,  cena: 80,  macro: "Carboidrati" },
+        { alimento: "Riso", pranzo: 80,  cena: 80,  macro: "Carboidrati" },
+        { alimento: "Cereali (Farro)", pranzo: 80,  cena: 80,  macro: "Carboidrati" },
+        { alimento: "Patate dolci", pranzo: 250, cena: 250,  macro: "Carboidrati" },
+        { alimento: "Pane", pranzo: 100,  cena: 100,  macro: "Carboidrati" },
+
+
+        
+        { alimento: "Carne", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Pollo", pranzo: 180, cena: 180, macro: "Proteine" },
+        { alimento: "Carne rossa", pranzo: 150, cena: 150, macro: "Proteine" },
+        
+        { alimento: "Pesce", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Pesce bianco", pranzo: 180, cena: 240, macro: "Proteine" },
+        { alimento: "Salmone", pranzo: 150, cena: 160, macro: "Proteine" },
+        { alimento: "Tonno", pranzo: 150, cena: 160, macro: "Proteine" },
+        { alimento: "Pesce spada", pranzo: 150, cena: 160, macro: "Proteine" },
+        { alimento: "Salmone affumicato", pranzo: 100, cena: 100, macro: "Proteine" },
+
+
+        { alimento: "Formaggi", pranzo: "" , cena: "" , macro: "Proteine" },
+
+
+        { alimento: "Ricotta capra/pecora", pranzo: 100, cena: 120, macro: "Proteine" },
+        { alimento: "Feta", pranzo: 60, cena: 80, macro: "Proteine" },
+        { alimento: "Robiola capra", pranzo: 60, cena: 80, macro: "Proteine" },
+        
+        { alimento: "Affettato", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Affettato", pranzo: 80, cena: 100, macro: "Proteine" },
+        
+        { alimento: "Legumi", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Legumi (secchi)", pranzo: 50, cena: 60, macro: "Proteine" },
+        { alimento: "Legumi (cotti)", pranzo: 150, cena: 180, macro: "Proteine" },
+
+        { alimento: "Avocado", pranzo: 50, cena: 70, macro: "Grassi" },
+        { alimento: "Olive taggiasche", pranzo: 30, cena: 30, macro: "Grassi" },
+    ],
+
+    moni: [
+        { alimento: "Pasta", pranzo: 60,  cena: 60,  macro: "Carboidrati" },
+        { alimento: "Riso", pranzo: 60,  cena: 60,  macro: "Carboidrati" },
+        { alimento: "Cereali (Farro)", pranzo: 50,  cena: 50,  macro: "Carboidrati" },
+        { alimento: "Gnocchi (patate/grano)", pranzo: 150,  cena: 150,  macro: "Carboidrati" },
+        { alimento: "Patate dolci", pranzo: 200, cena: 200,  macro: "Carboidrati" },
+        { alimento: "Pane", pranzo: 80,  cena: 80,  macro: "Carboidrati" },
+
+
+        
+        { alimento: "Carne", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Pollo", pranzo: 160, cena: 180, macro: "Proteine" },
+        { alimento: "Carne rossa", pranzo: 150, cena: 150, macro: "Proteine" },
+        { alimento: "Uova", pranzo: 2, cena: 2, macro: "Proteine" },
+        
+        { alimento: "Pesce", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Pesce bianco", pranzo: 180, cena: 200, macro: "Proteine" },
+        { alimento: "Salmone", pranzo: 150, cena: 160, macro: "Proteine" },
+        { alimento: "Tonno", pranzo: 150, cena: 160, macro: "Proteine" },
+        { alimento: "Pesce spada", pranzo: 150, cena: 160, macro: "Proteine" },
+        { alimento: "Tonno (al naturale)", pranzo: 100, cena: 100, macro: "Proteine" },
+        { alimento: "Salmone affumicato", pranzo: 100, cena: 100, macro: "Proteine" },
+
+
+        { alimento: "Formaggi", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Ricotta", pranzo: 100, cena: 120, macro: "Proteine" },
+        { alimento: "Crescenza", pranzo: 60, cena: 80, macro: "Proteine" },
+        { alimento: "Primo sale", pranzo: 60, cena: 80, macro: "Proteine" },
+        { alimento: "Robiola", pranzo: 60, cena: 80, macro: "Proteine" },
+        
+        { alimento: "Affettato", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Affettato", pranzo: 80, cena: 100, macro: "Proteine" },
+        
+        { alimento: "Legumi", pranzo: "" , cena: "" , macro: "Proteine" },
+
+        { alimento: "Legumi (secchi)", pranzo: 50, cena: 60, macro: "Proteine" },
+        { alimento: "Legumi (cotti)", pranzo: 150, cena: 180, macro: "Proteine" },
+
+        { alimento: "Avocado", pranzo: 40, cena: 70, macro: "Grassi" },
+        { alimento: "Olive taggiasche", pranzo: 30, cena: 30, macro: "Grassi" },
+    ]
+};
+
+/* ===============================
+   RENDER TABELLE
+   =============================== */
+
+function renderTable(id, rows){
+
+    const table = document.getElementById(id);
+
+    // Raggruppo i dati per macro
+    const gruppi = {};
+    rows.forEach(r => {
+        if (!gruppi[r.macro]) gruppi[r.macro] = [];
+        gruppi[r.macro].push(r);
+    });
+
+    // Render
+    Object.keys(gruppi).forEach(macro => {
+
+        const style = macroStyle[macro];
+
+        // HEADER MACRO
+        const headerRow = document.createElement("tr");
+        headerRow.className = style.cls + " macro-row";
+
+        headerRow.innerHTML = `
+            <td colspan="3">
+                <span class="macro-icon">${style.icon}</span>
+                ${macro}
+            </td>
+        `;
+
+        headerRow.addEventListener("click", () => {
+            const rows = table.querySelectorAll(`.row-${macro}`);
+            rows.forEach(r => r.classList.toggle("hidden"));
+        });
+
+        table.appendChild(headerRow);
+
+        // righe
+        gruppi[macro].forEach(r => {
+            const tr = document.createElement("tr");
+            tr.className = "row-" + macro + " "
+            + (r.pranzo == "" && r.cena == "" ? "row-braker" : "")
+            ;
+            tr.innerHTML = `
+                <td>${r.alimento}</td>
+                <td>${r.pranzo}</td>
+                <td>${r.cena}</td>
+            `;
+            table.appendChild(tr);
+        });
+    });
+}
+
+renderTable("tabFil",  data.fil);
+renderTable("tabMoni", data.moni);
+
+/* ===============================
+   SWITCH TRA TUTTO / FIL / MONI
+   + COOKIE
+   =============================== */
+
+function setCookie(name, value){
+    document.cookie = `${name}=${value}; path=/; max-age=31536000`; // 1 anno
+}
+
+function getCookie(name){
+    const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+    return match ? match[2] : null;
+}
+
+function applyView(view){
+    const fil = document.getElementById("boxFil");
+    const moni = document.getElementById("boxMoni");
+
+    // reset
+    fil.style.display = "block";
+    moni.style.display = "block";
+
+    if (view === "fil"){ moni.style.display = "none"; }
+    if (view === "moni"){ fil.style.display = "none"; }
+
+    // aggiorno stile pulsanti
+    document.querySelectorAll(".switch-btn").forEach(btn=>{
+        btn.classList.toggle("active", btn.dataset.view === view);
+    });
+
+    // salva preferenza
+    setCookie("viewmode", view);
+}
+
+document.querySelectorAll(".switch-btn").forEach(btn => {
+    btn.addEventListener("click", () => applyView(btn.dataset.view));
+});
+
+// carica selezione salvata
+let lastView = getCookie("viewmode") || "tutto";
+applyView(lastView);
+
+</script>
+
+</body>
+</html>
